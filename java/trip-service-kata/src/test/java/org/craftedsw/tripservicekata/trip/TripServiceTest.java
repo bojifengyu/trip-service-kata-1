@@ -1,16 +1,23 @@
 package org.craftedsw.tripservicekata.trip;
 
-	import static org.junit.Assert.*;
-	import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
 import static org.craftedsw.tripservicekata.trip.UserBuilder.*;
+
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Spy;
+import org.mockito.runners.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.craftedsw.tripservicekata.exception.UserNotLoggedInException;
 import org.craftedsw.tripservicekata.user.User;
 
 import java.util.List;
 
+@RunWith(MockitoJUnitRunner.class)
 public class TripServiceTest {
 
 	private static final User UNUSED_USER = null;
@@ -20,6 +27,8 @@ public class TripServiceTest {
 	private static final Trip TO_BRAZIL = new Trip();
 	private static final Trip TO_LONDON = new Trip();
 
+	@Mock private TripDAO  tripDAO;
+	@InjectMocks @Spy private TripService realTripService = new TripService();
 	private TripService tripService;
 
 	@Before
@@ -29,7 +38,7 @@ public class TripServiceTest {
 
 	@Test(expected = UserNotLoggedInException.class)
 	public void should_throw_exception_user_not_logged_in() {
-		tripService.getTripsByUser(UNUSED_USER, GUEST);
+		realTripService.getTripsByUser(UNUSED_USER, GUEST);
 	}
 
 	@Test
@@ -38,7 +47,7 @@ public class TripServiceTest {
 				.friendsWith(ANOTHER_USER)
 				.withTrips(TO_BRAZIL).build();
 
-		List<Trip> tripList = tripService.getTripsByUser(friend, REGISTERED_USER);
+		List<Trip> tripList = realTripService.getTripsByUser(friend, REGISTERED_USER);
 
 		assertThat(tripList.size(), is(0));
 	}

@@ -9,6 +9,8 @@ import org.craftedsw.tripservicekata.user.UserSession;
 
 public class TripService {
 
+//	@Autowired private TripDAO tripDAO;
+	
 	public List<Trip> getTripsByUser(User user, User loggedInUser) throws UserNotLoggedInException {
 		if (loggedInUser == null) {
 			throw new UserNotLoggedInException();
